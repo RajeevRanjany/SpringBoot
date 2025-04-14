@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- bean definitions here -->
+    <bean id="newDatabaseProvider" class="com.example.ChallengeOne.NewDatabaseProvider"></bean>
+    <bean id="userDatabaseProvider" class="com.example.ChallengeOne.UserDatabaseProvider"></bean>
+    <bean id="webServiceDataProvider" class="com.example.ChallengeOne.WebServiceDataProvider"></bean>
+
+
+    <bean id="userManagerWithuserDatabaseProvider" class="com.example.ChallengeOne.UserManager">
+        <constructor-arg ref="userDatabaseProvider"></constructor-arg>
+    </bean>
+
+    <bean id="userManagerWithnewDatabaseProvider" class="com.example.ChallengeOne.UserManager">
+        <constructor-arg ref="newDatabaseProvider"></constructor-arg>
+    </bean>
+
+    <bean id="userManagerWithwebServiceDataProvider" class="com.example.ChallengeOne.UserManager">
+        <constructor-arg ref="webServiceDataProvider"></constructor-arg>
+    </bean>
+
+    <!--
+   <bean id="newDatabaseProvider" class="com.example.ChallengeOne.NewDatabaseProvider"/>
+
+   <bean id="userManager" class="com.example.ChallengeOne.UserManager">
+       <constructor-arg ref="newDatabaseProvider"></constructor-arg>
+   </bean>
+
+   <bean id="userManager" class="com.example.ChallengeOne.UserManager">
+       <constructor-arg ref="newDatabaseProvider"></constructor-arg>
+   </bean>
+-->
+
+</beans>
