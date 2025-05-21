@@ -28,11 +28,15 @@ public class Address {
 
     @NotBlank
     @Size(min = 5, message = "building name must be at least 5 character")
-    private String building;
+    private String buildingName;
 
     @NotBlank
-    @Size(min = 4, message = "city name must be at least 5 character")
+    @Size(min = 4, message = "city name must be at least 4 character")
     private String city;
+
+    @NotBlank
+    @Size(min = 2, message = "state name must be at least 2 character")
+    private String state;
 
     @NotBlank
     @Size(min = 2, message = "country name must be at least 5 character")
@@ -42,14 +46,14 @@ public class Address {
     @Size(min = 6, max = 6, message = "pin code no is of 6 digit")
     private String pincode;
 
-    @ToString.Exclude
-    @ManyToMany
-    @JoinTable(name = "addresses")
-    private List<User> users = new ArrayList<>();
 
-    public Address(String street, String building, String city, String country, String pincode) {
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    public Address(String street, String buildingName, String city, String country, String pincode) {
         this.street = street;
-        this.building = building;
+        this.buildingName = buildingName;
         this.city = city;
         this.country = country;
         this.pincode = pincode;
