@@ -18,7 +18,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -31,18 +33,27 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private CartRepository cartRepository;
+
     @Autowired
     private CartService cartService;
+
     @Autowired
     private ProductRepository productRepository;
+
     @Autowired
     CategoryRepository categoryRepository;
+
     @Autowired
     ModelMapper modelMapper;
+
     @Autowired
     FileService fileService;
+
     @Value("${project.image}")
     private String path;
+
+    @Value("${image.base.url}")
+    private String imageBaseUrl;
 
 
     @Override
@@ -71,18 +82,35 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductResponse getAllProducts(Integer pageNo, Integer pageSize, String sortBy, String sortOrder) {
+    public ProductResponse getAllProducts(Integer pageNo, Integer pageSize, String sortBy, String sortOrder, String keyword, String category) {
 
         Sort sortByAndOrder = sortOrder.equalsIgnoreCase("asc") ?
                 Sort.by(sortBy).ascending() :
                 Sort.by(sortBy).descending();
         Pageable pageDetails = PageRequest.of(pageNo, pageSize, sortByAndOrder);
-        Page<Product> pageProducts = productRepository.findAll(pageDetails);
+        Specification<Product> spec = Specification.where(null);
 
+        if (keyword != null && !keyword.isEmpty()) {
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.like(criteriaBuilder.lower(root.get("productName")), "%" + keyword.toLowerCase() + "%"));
+        }
+
+        if (category != null && !category.isEmpty()) {
+            spec = spec.and((root, query, criteriaBuilder) ->
+                    criteriaBuilder.like(root.get("category").get("categoryName"), category));
+        }
+
+
+
+        Page<Product> pageProducts = productRepository.findAll(spec,pageDetails);
         List<Product> products = pageProducts.getContent();
 
         List<ProductDTO> productDTOS = products.stream()
-                .map(product -> modelMapper.map(product, ProductDTO.class))
+                .map(product -> {
+                    ProductDTO productDTO = modelMapper.map(product, ProductDTO.class);
+                    productDTO.setImage(constructImageUrl(product.getImage()));
+                    return productDTO;
+                })
                 .toList();
 
 //        if (products.isEmpty()) {
@@ -92,13 +120,16 @@ public class ProductServiceImpl implements ProductService {
 
         ProductResponse productResponse = new ProductResponse();
         productResponse.setContent(productDTOS);
-
         productResponse.setPageNumber(pageProducts.getNumber());
         productResponse.setPageSize(pageProducts.getSize());
         productResponse.setTotalElements(pageProducts.getTotalElements());
         productResponse.setTotalPages(pageProducts.getTotalPages());
         productResponse.setLastPage(pageProducts.isLast());
         return productResponse;
+    }
+
+    private String constructImageUrl(String imageName) {
+        return imageBaseUrl.endsWith("/") ? imageBaseUrl + imageName : imageBaseUrl + "/" + imageName;
     }
 
     @Override
@@ -203,16 +234,19 @@ public class ProductServiceImpl implements ProductService {
         return modelMapper.map(savedProduct, ProductDTO.class);
     }
 
+    @Transactional
     @Override
     public ProductDTO deleteProduct(Long productId) {
         Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new ResourceNotFoundException("Product", "id", productId));
+                .orElseThrow(() -> new ResourceNotFoundException("Product", "productId", productId));
+
         // DELETE
         List<Cart> carts = cartRepository.findCartsByProductId(productId);
         carts.forEach(cart -> cartService.deleteProductFromCart(cart.getCartId(), productId));
 
         productRepository.delete(product);
         return modelMapper.map(product, ProductDTO.class);
+
     }
 
     @Override
