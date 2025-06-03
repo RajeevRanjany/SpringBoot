@@ -17,7 +17,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 //import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 //import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -70,7 +69,6 @@ public class WebSecurityConfig {
     }
 
 
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
@@ -81,12 +79,15 @@ public class WebSecurityConfig {
                                 .requestMatchers("/api/auth/**").permitAll()
                                 .requestMatchers("/v3/api-docs/**").permitAll()
                                 .requestMatchers("/h2-console/**").permitAll()
-                                //.requestMatchers("/api/admin/**").permitAll()
+                                .requestMatchers("/api/admin/**").hasRole("ADMIN")
                                 .requestMatchers("/api/public/**").permitAll()
                                 .requestMatchers("/swagger-ui/**").permitAll()
-//                                .requestMatchers("/api/test/**").permitAll()
+                                .requestMatchers("/api/test/**").permitAll()
                                 .requestMatchers("/images/**").permitAll()
+                                .requestMatchers("/", "/favicon.ico", "/static/**").permitAll() // added this to sort full authentication req error
+
                                 .anyRequest().authenticated()
+
                 );
 
         http.authenticationProvider(authenticationProvider());
