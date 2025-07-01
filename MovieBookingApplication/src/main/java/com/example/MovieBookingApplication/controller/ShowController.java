@@ -1,8 +1,7 @@
-package com.example.MovieBookingApplication.Controller;
+package com.example.MovieBookingApplication.controller;
 
 import com.example.MovieBookingApplication.dto.ShowDTO;
 import com.example.MovieBookingApplication.entity.Show;
-import com.example.MovieBookingApplication.entity.Theater;
 import com.example.MovieBookingApplication.service.ShowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package com.example.MovieBookingApplication.Controller;
+package com.example.MovieBookingApplication.controller;
 
 import com.example.MovieBookingApplication.dto.BookingDTO;
 import com.example.MovieBookingApplication.entity.Booking;

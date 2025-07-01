@@ -25,7 +25,7 @@ public class Show {
     private Theater theater;
 
     @OneToMany(mappedBy = "show", fetch = FetchType.LAZY)
-    private List<Booking> booking;
+    private List<Booking> bookings;
 
 
 }
