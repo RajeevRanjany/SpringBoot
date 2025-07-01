@@ -1,5 +1,6 @@
 package com.example.MovieBookingApplication.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -18,6 +19,7 @@ public class Theater {
     private String theaterScreenType;
 
     @OneToMany(mappedBy = "theater", fetch = FetchType.LAZY)
+    @JsonIgnore
     List<Show> shows;
 
 }
