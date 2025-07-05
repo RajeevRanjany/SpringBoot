@@ -1,2 +1,17 @@
-spring.application.name=MovieBookingApplication
-jwt.secret = maakabhosda@#$
+spring:
+  application:
+    name: MovieBookingApplication
+  datasource:
+    url: jdbc:mysql://localhost:3306/moviebookingapp
+    username: root
+    password: rajeev
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+jwt:
+  secret: A7X3fg8Dke9@!fGrT29cL93zMf8KvdPq
+  expiration : 86400000
