@@ -6,17 +6,15 @@ import com.ecommerce.project.payload.AddressDTO;
 import java.util.List;
 
 public interface AddressService {
-
     AddressDTO createAddress(AddressDTO addressDTO, User user);
 
     List<AddressDTO> getAddresses();
 
-    AddressDTO getAddressById(Long addressId);
+    AddressDTO getAddressesById(Long addressId);
 
     List<AddressDTO> getUserAddresses(User user);
 
     AddressDTO updateAddress(Long addressId, AddressDTO addressDTO);
 
-    String deleteAddresses(Long addressId);
-
+    String deleteAddress(Long addressId);
 }
