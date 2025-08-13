@@ -12,7 +12,7 @@ services:
     volumes:
       - postgres:/data/postgres
     ports:
-      - "5433:5432"   # Match Spring Boot's DB config
+      - "5432:5432"   # Match Spring Boot's DB config
     networks:
       - backend
     restart: unless-stopped

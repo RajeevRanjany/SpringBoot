@@ -1,0 +1,8 @@
+| Field                 | Value                |
+| --------------------- | -------------------- |
+| **Host name/address** | `postgres_container` |
+| **Port**              | `5432`               |
+| **Username**          | `postgres`           |
+| **Password**          | `rajeev`             |
+| Save Password?        | ✅ Yes                |
+
